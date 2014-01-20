@@ -23,34 +23,34 @@ Rectangle {
 
     function getUnit(n) {
         if (n < 1000)
-            return "thousand";
+            return "";
         if (n < 1000000)
-            return " million ";
+            return "k";
         if (n < 1000000000)
-            return " billion ";
+            return "M";
         if (n < 1000000000000)
-            return " trillion ";
+            return "Giga";
         if (n < 1000000000000000)
-            return " quadrillion ";
+            return "Tera";
         if (n < 1000000000000000000)
-            return " quintillion ";
-        return " sextillion";
+            return "Quinta";
+        return "quintillion";
     }
 
     function getDiv(n) {
         if (n < 1000)
-            return 1000;
+            return 1;
         if (n < 1000000)
-            return 1000000;
+            return 1000;
         if (n < 1000000000)
+            return 1000000;
+        if (n < 1000000000000)
             return 1000000000;
         if (n < 1000000000000)
-            return 1000000000000;
-        if (n < 1000000000000000)
             return 1000000000000000;
-        if (n < 1000000000000000000)
+        if (n < 1000000000000000)
             return 1000000000000000000;
-        return 1000000000000000000000;
+        return 1000000000000000000;
     }
 
     Rectangle {
@@ -71,30 +71,30 @@ Rectangle {
         Text {
             id: counterText
             property string cookieUnit: ""
-            property string cookieString: cookies.toFixed(0) + cookieUnit + " cookies."
+            property string cookieString: (cookies / getDiv(bps)).toFixed(0) +
+                                           cookieUnit + " cookies."
             text: cookieString
-            anchors.right: cookieImage.right
-            y: cookieImage.height + 95
+            anchors.horizontalCenter: cookieImage.horizontalCenter
+            anchors.top: cookieImage.bottom
             font.pointSize: 24
             font.family: fontRibeye.name
         }
-        MouseArea {
-            anchors.fill: cookieImage
-            onClicked: {
-                cookies += 1
-            }
-        }
-
         Text {
             id: text1
-            x: 0
-            y: 573
+            anchors.left: parent.left
+            anchors.bottom: parent.bottom
             width: 194
             height: 27
             text: qsTr(bps + " cookies per second")
             font.bold: true
             font.pointSize: 12
             font.pixelSize: 12
+        }
+        MouseArea {
+            anchors.fill: cookieImage
+            onClicked: {
+                cookies += 1
+            }
         }
     }
 
@@ -249,7 +249,7 @@ Rectangle {
                         selectedItemNumber = itemNumber;
                         cookies = cookies - cout
                         bps = bps + cout / 100
-                        counterText.cookieString = cookies / getDiv(n) + getUnit(bps)
+                        counterText.cookieUnit = getUnit(bps)
                     }
                     console.log("clicked " + selectedItemNumber)
                 }
@@ -289,7 +289,9 @@ Rectangle {
             anchors.fill: parent
             onClicked: {
                 cookies = 100
-                bps = 0
+                bps = 10000000000000000000
+                counterText.cookieUnit = getUnit(bps)
+                console.log(counterText.cookieUnit)
             }
         }
 
@@ -298,6 +300,33 @@ Rectangle {
             anchors.centerIn: container
             color: "blue"
             text: container.text
+        }
+    }
+
+    Rectangle  {
+        id: containerQuit
+        property string text: "Quit"
+        signal clicked
+        x: 59
+        y: 0
+        width: buttonLabel.width + 20; height: buttonLabel.height + 5
+        border  { width: 1; color: Qt.darker("Red") }
+        smooth: true
+        radius: 8
+
+        MouseArea  {
+            id: mouseAreaQuit
+            anchors.fill: parent
+            onClicked: {
+                Qt.quit()
+            }
+        }
+
+        Text  {
+            id: buttonLabelQuit
+            anchors.centerIn: containerQuit
+            color: "blue"
+            text: containerQuit.text
         }
     }
 }

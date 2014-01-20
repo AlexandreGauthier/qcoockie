@@ -15,7 +15,8 @@ int main(int argc, char *argv[])
     QtQuick2ApplicationViewer viewer;
     viewer.rootContext()->setContextProperty("settings", &settings);
     viewer.setMainQmlFile(QStringLiteral("qml/superapp/main.qml"));
-    viewer.showExpanded();
+    //viewer.showExpanded();
+    viewer.showFullScreen();
 
     return app.exec();
 }
